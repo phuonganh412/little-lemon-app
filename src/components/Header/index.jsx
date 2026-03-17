@@ -1,5 +1,7 @@
-import { Nav } from "components/Nav";
+import { NavHorizontal } from "components/NavHorizontal";
 import logo from "assets/logo.jpg";
+import { routes } from "constants/routes";
+
 export function Header() {
     return (
         <header className="w-full bg-white border-b border-gray-200">
@@ -10,7 +12,7 @@ export function Header() {
                         src={logo}
                         alt="Little Lemon logo"
                     />
-                    <Nav className="flex-1" />
+                    <NavHorizontal className="flex-1" routes={routes} />
                 </div>
             </div>
         </header>
