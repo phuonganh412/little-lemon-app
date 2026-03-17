@@ -15,10 +15,43 @@ function SocialLink({ label, href, children }) {
     );
 }
 
+function FooterSection({ title, children }) {
+    return (
+        <div>
+            <h3 className="text-sm font-extrabold tracking-widest text-white">
+                {title}
+            </h3>
+            <div className="mt-5">{children}</div>
+        </div>
+    );
+}
+
+const footerSections = [
+    {
+        title: "NAVIGATION",
+        type: "nav",
+    },
+    {
+        title: "HOURS",
+        type: "hours",
+        items: [
+            { label: "Monday - Friday", value: "8am - 10pm" },
+            { label: "Saturday & Sunday", value: "10am - 4pm" },
+            { label: "Online Ordering", value: "11am - 9pm" },
+        ],
+    },
+    {
+        title: "ADDRESS",
+        type: "address",
+        items: ["Address here...", "Phone number", "Email"],
+    },
+];
+
 export function Footer() {
     return (
         <footer className="bg-[#495E57] text-left text-white">
             <div className="mx-auto grid max-w-6xl gap-10 px-6 py-16 md:grid-cols-2 lg:grid-cols-4">
+                {/* LEFT COLUMN */}
                 <div className="max-w-sm">
                     <img
                         className="h-12 w-auto"
@@ -40,49 +73,38 @@ export function Footer() {
                     </div>
                 </div>
 
-                <div>
-                    <h3 className="text-sm font-extrabold tracking-widest text-white">
-                        NAVIGATION
-                    </h3>
-                    <NavVertical className="mt-5" routes={routes} />
-                </div>
+                {/* RIGHT COLUMNS*/}
+                {footerSections.map((section) => (
+                    <FooterSection key={section.title} title={section.title}>
+                        {/* NAV */}
+                        {section.type === "nav" && (
+                            <NavVertical routes={routes} />
+                        )}
 
-                <div>
-                    <h3 className="text-sm font-extrabold tracking-widest text-white">
-                        HOURS
-                    </h3>
-                    <div className="mt-5 space-y-5 text-sm leading-6 text-white/80">
-                        <div>
-                            <p className="font-medium text-white">
-                                Monday - Friday
-                            </p>
-                            <p>8am - 10pm</p>
-                        </div>
-                        <div>
-                            <p className="font-medium text-white">
-                                Saturday &amp; Sunday
-                            </p>
-                            <p>10am - 4pm</p>
-                        </div>
-                        <div>
-                            <p className="font-medium text-white">
-                                Online Ordering
-                            </p>
-                            <p>11am - 9pm</p>
-                        </div>
-                    </div>
-                </div>
+                        {/* HOURS */}
+                        {section.type === "hours" && (
+                            <div className="space-y-5 text-sm leading-6 text-white/80">
+                                {section.items.map((item) => (
+                                    <div key={item.label}>
+                                        <p className="font-medium text-white">
+                                            {item.label}
+                                        </p>
+                                        <p>{item.value}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
-                <div>
-                    <h3 className="text-sm font-extrabold tracking-widest text-white">
-                        ADDRESS
-                    </h3>
-                    <ul className="mt-5 space-y-3 text-sm leading-6 text-white/80">
-                        <li>Address here...</li>
-                        <li>Phone number</li>
-                        <li>Email</li>
-                    </ul>
-                </div>
+                        {/* ADDRESS */}
+                        {section.type === "address" && (
+                            <ul className="space-y-3 text-sm leading-6 text-white/80">
+                                {section.items.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                ))}
+                            </ul>
+                        )}
+                    </FooterSection>
+                ))}
             </div>
         </footer>
     );
