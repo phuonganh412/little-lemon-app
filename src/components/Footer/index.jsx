@@ -8,7 +8,7 @@ function SocialLink({ label, href, children }) {
         <a
             href={href}
             aria-label={label}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-white/80 transition-colors hover:text-white"
         >
             {children}
         </a>
