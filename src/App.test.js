@@ -1,7 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import App from "./App";
 
 test("renders header logo", () => {
     render(<App />);
-    expect(screen.getByAltText(/little lemon logo/i)).toBeInTheDocument();
+    const header = screen.getByRole("banner");
+    expect(
+        within(header).getByAltText(/little lemon logo/i)
+    ).toBeInTheDocument();
 });
