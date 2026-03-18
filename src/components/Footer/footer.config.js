@@ -1,14 +1,9 @@
-import { NavVertical } from "components/NavVertical";
-import { routes } from "constants/routes";
-
 export const footerConfig = [
     {
-        title: "NAVIGATION",
-        component: NavVertical,
-        props: { routes },
+        type: "navigation",
     },
     {
-        title: "HOURS",
+        type: "hours",
         items: [
             { label: "Monday - Friday", value: "8am - 10pm" },
             { label: "Saturday & Sunday", value: "10am - 4pm" },
@@ -16,7 +11,7 @@ export const footerConfig = [
         ],
     },
     {
-        title: "ADDRESS",
+        type: "address",
         items: ["Address here...", "Phone number", "Email"],
     },
 ];
