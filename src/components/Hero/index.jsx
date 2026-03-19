@@ -25,7 +25,7 @@ export function Hero() {
 
                     <a
                         href="/reservations"
-                        className="mt-10 inline-flex items-center justify-center rounded-full bg-[#F4CE14] px-7 py-3 font-medium text-gray-900 shadow-sm transition-colors hover:bg-[#e3b913] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4CE14] focus-visible:ring-offset-2 focus-visible:ring-offset-[#495E57]"
+                        className="mt-10 inline-flex items-center justify-center rounded-full bg-[#F4CE14] px-7 py-3 font-medium text-gray-900 shadow-sm transition-colors hover:bg-[#e3b913]"
                     >
                         Reserve a Table
                     </a>
