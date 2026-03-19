@@ -1,4 +1,4 @@
-import { Hero } from "components/Hero";
+import { Hero } from "components/HomeHero";
 
 export function Main() {
     return (
