@@ -1,6 +1,6 @@
 import heroImg from "assets/hero-img.jpg";
 
-export function Hero() {
+export function HeroSection() {
     return (
         <section
             aria-labelledby="hero-title"
