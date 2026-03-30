@@ -5,7 +5,6 @@ import { TextAreaField } from "../TextAreaField";
 import { TextField } from "../TextField";
 import {
     useReservationForm,
-    timeOptions,
     guestOptions,
     occasionOptions,
 } from "./useReservationForm";
@@ -15,6 +14,7 @@ export function ReservationForm() {
         values,
         error,
         isSuccess,
+        availableTimeOptions,
         handleChange,
         handleBlur,
         handleSubmit,
@@ -99,7 +99,7 @@ export function ReservationForm() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             error={error.time}
-                            options={timeOptions}
+                            options={availableTimeOptions}
                             placeholder="Choose time..."
                             required
                         />
