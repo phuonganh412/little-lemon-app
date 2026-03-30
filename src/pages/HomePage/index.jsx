@@ -1,14 +1,12 @@
 import { Header } from "components/Header";
+import { Main } from "components/Main";
 import { Footer } from "components/Footer";
-import { ReservationHero } from "./ReservationHero";
-import { ReservationBody } from "./ReservationBody";
 
-export function Reservation() {
+export function HomePage() {
     return (
         <div className="App">
             <Header />
-            <ReservationHero />
-            <ReservationBody />
+            <Main />
             <Footer />
         </div>
     );

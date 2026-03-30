@@ -1,21 +1,15 @@
 import "./App.css";
-import { Header } from "components/Header";
-import { Main } from "components/Main";
-import { Footer } from "components/Footer";
-import { Reservation } from "components/Reservation";
-import { RESERVATION_PATH } from "constants/routes";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { HomePage } from "pages/HomePage";
+import { ReservationPage } from "pages/ReservationPage";
 
 function App() {
-    if (window.location.pathname === RESERVATION_PATH) {
-        return <Reservation />;
-    }
-
     return (
-        <div className="App">
-            <Header />
-            <Main />
-            <Footer />
-        </div>
+        <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/reservation" element={<ReservationPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
     );
 }
 

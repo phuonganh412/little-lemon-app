@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function NavVertical({
     className = "",
     routes = [],
@@ -8,12 +10,12 @@ export function NavVertical({
             <ul className="m-0 flex list-none flex-col gap-3 p-0">
                 {routes.map((route) => (
                     <li key={route.url}>
-                        <a
+                        <Link
                             className="text-sm font-medium text-white/80 no-underline transition-colors hover:text-white"
-                            href={route.url}
+                            to={route.url}
                         >
                             {route.label}
-                        </a>
+                        </Link>
                     </li>
                 ))}
             </ul>

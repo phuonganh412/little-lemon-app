@@ -1,5 +1,5 @@
 import reservationBgImg from "assets/reservation-bg.png";
-import { ReservationForm } from "./ReservationForm";
+import { ReservationForm } from "../ReservationForm";
 
 export function ReservationBody() {
     return (

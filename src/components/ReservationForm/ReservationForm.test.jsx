@@ -1,12 +1,15 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ReservationForm } from "./ReservationForm";
+import { ReservationForm } from "./index";
 
-// Helper to get a future date string in YYYY-MM-DD format
+// Helper: `<input type="date">` value for a date one week ahead (local calendar)
 function getFutureDate() {
     const date = new Date();
     date.setDate(date.getDate() + 7);
-    return date.toISOString().split("T")[0];
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
 }
 
 // Helper to fill in all required fields with valid data
@@ -19,15 +22,15 @@ async function fillFormValid() {
     await userEvent.type(screen.getByLabelText(/select the date/i), futureDate);
     await userEvent.selectOptions(
         screen.getByLabelText(/choose the time/i),
-        "17:00"
+        "17:00",
     );
     await userEvent.selectOptions(
         screen.getByLabelText(/specify the number of guests/i),
-        "2"
+        "2",
     );
     await userEvent.selectOptions(
         screen.getByLabelText(/special occasion/i),
-        "birthday"
+        "birthday",
     );
 }
 
@@ -42,13 +45,13 @@ describe("ReservationForm", () => {
         expect(screen.getByLabelText(/select the date/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/choose the time/i)).toBeInTheDocument();
         expect(
-            screen.getByLabelText(/specify the number of guests/i)
+            screen.getByLabelText(/specify the number of guests/i),
         ).toBeInTheDocument();
         expect(screen.getByLabelText(/special occasion/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/your message/i)).toBeInTheDocument();
 
         expect(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         ).toBeInTheDocument();
     });
 
@@ -56,7 +59,7 @@ describe("ReservationForm", () => {
         render(<ReservationForm />);
 
         expect(
-            screen.getByText(/reserve a table at our restaurant/i)
+            screen.getByText(/reserve a table at our restaurant/i),
         ).toBeInTheDocument();
     });
 
@@ -71,7 +74,7 @@ describe("ReservationForm", () => {
         render(<ReservationForm />);
 
         await userEvent.click(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         );
 
         const alerts = screen.getAllByRole("alert");
@@ -80,19 +83,19 @@ describe("ReservationForm", () => {
         expect(screen.getByText(/full name is required/i)).toBeInTheDocument();
         expect(screen.getByText(/email is required/i)).toBeInTheDocument();
         expect(
-            screen.getByText(/phone number is required/i)
+            screen.getByText(/phone number is required/i),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/reservation date is required/i)
+            screen.getByText(/reservation date is required/i),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/reservation time is required/i)
+            screen.getByText(/reservation time is required/i),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/number of guests is required/i)
+            screen.getByText(/number of guests is required/i),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/please choose an occasion/i)
+            screen.getByText(/please choose an occasion/i),
         ).toBeInTheDocument();
     });
 
@@ -100,7 +103,7 @@ describe("ReservationForm", () => {
         render(<ReservationForm />);
 
         await userEvent.click(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         );
 
         expect(screen.queryByRole("status")).not.toBeInTheDocument();
@@ -115,7 +118,7 @@ describe("ReservationForm", () => {
         await userEvent.tab();
 
         expect(
-            screen.getByText(/full name must be at least 2 characters/i)
+            screen.getByText(/full name must be at least 2 characters/i),
         ).toBeInTheDocument();
     });
 
@@ -127,7 +130,7 @@ describe("ReservationForm", () => {
         await userEvent.tab();
 
         expect(
-            screen.getByText(/please enter a valid email/i)
+            screen.getByText(/please enter a valid email/i),
         ).toBeInTheDocument();
     });
 
@@ -139,7 +142,7 @@ describe("ReservationForm", () => {
         await userEvent.tab();
 
         expect(
-            screen.getByText(/please enter a valid phone number/i)
+            screen.getByText(/please enter a valid phone number/i),
         ).toBeInTheDocument();
     });
 
@@ -152,14 +155,14 @@ describe("ReservationForm", () => {
         await userEvent.tab();
 
         expect(
-            screen.getByText(/full name must be at least 2 characters/i)
+            screen.getByText(/full name must be at least 2 characters/i),
         ).toBeInTheDocument();
 
         await userEvent.clear(input);
         await userEvent.type(input, "John Doe");
 
         expect(
-            screen.queryByText(/full name must be at least 2 characters/i)
+            screen.queryByText(/full name must be at least 2 characters/i),
         ).not.toBeInTheDocument();
     });
 
@@ -169,12 +172,12 @@ describe("ReservationForm", () => {
 
         await fillFormValid();
         await userEvent.click(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(screen.getByRole("status")).toBeInTheDocument();
+        expect(await screen.findByRole("status")).toBeInTheDocument();
         expect(
-            screen.getByText(/reservation submitted successfully/i)
+            screen.getByText(/reservation submitted successfully/i),
         ).toBeInTheDocument();
     });
 
@@ -183,15 +186,16 @@ describe("ReservationForm", () => {
 
         await fillFormValid();
         await userEvent.click(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         );
 
+        expect(await screen.findByRole("status")).toBeInTheDocument();
         expect(screen.getByLabelText(/full name/i)).toHaveValue("");
         expect(screen.getByLabelText(/email/i)).toHaveValue("");
         expect(screen.getByLabelText(/phone/i)).toHaveValue("");
         expect(screen.getByLabelText(/choose the time/i)).toHaveValue("");
         expect(
-            screen.getByLabelText(/specify the number of guests/i)
+            screen.getByLabelText(/specify the number of guests/i),
         ).toHaveValue("");
         expect(screen.getByLabelText(/special occasion/i)).toHaveValue("");
     });
@@ -201,16 +205,17 @@ describe("ReservationForm", () => {
 
         // First, submit empty to trigger errors
         await userEvent.click(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         );
         expect(screen.getAllByRole("alert").length).toBeGreaterThanOrEqual(6);
 
         // Now fill form correctly and resubmit
         await fillFormValid();
         await userEvent.click(
-            screen.getByRole("button", { name: /book now/i })
+            screen.getByRole("button", { name: /book now/i }),
         );
 
+        expect(await screen.findByRole("status")).toBeInTheDocument();
         expect(screen.queryAllByRole("alert")).toHaveLength(0);
     });
 
@@ -231,7 +236,7 @@ describe("ReservationForm", () => {
         render(<ReservationForm />);
 
         const guestSelect = screen.getByLabelText(
-            /specify the number of guests/i
+            /specify the number of guests/i,
         );
         const options = within(guestSelect).getAllByRole("option");
 
@@ -248,10 +253,10 @@ describe("ReservationForm", () => {
         // placeholder + 4 occasions
         expect(options).toHaveLength(5);
         expect(
-            within(occasionSelect).getByText("Birthday")
+            within(occasionSelect).getByText("Birthday"),
         ).toBeInTheDocument();
         expect(
-            within(occasionSelect).getByText("Anniversary")
+            within(occasionSelect).getByText("Anniversary"),
         ).toBeInTheDocument();
     });
 
@@ -259,7 +264,7 @@ describe("ReservationForm", () => {
     test("form has noValidate attribute", () => {
         render(<ReservationForm />);
 
-        const form = document.querySelector("form");
-        expect(form).toHaveAttribute("novalidate");
+        const submitButton = screen.getByRole("button", { name: /book now/i });
+        expect(submitButton.form).toHaveAttribute("novalidate");
     });
 });
