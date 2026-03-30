@@ -13,7 +13,7 @@ import {
 export function ReservationForm() {
     const {
         values,
-        errors,
+        error,
         isSuccess,
         handleChange,
         handleBlur,
@@ -41,7 +41,7 @@ export function ReservationForm() {
                             value={values.fullName}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={errors.fullName}
+                            error={error.fullName}
                             required
                         />
                     </div>
@@ -56,7 +56,7 @@ export function ReservationForm() {
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={errors.email}
+                            error={error.email}
                             required
                         />
                     </div>
@@ -71,61 +71,69 @@ export function ReservationForm() {
                             value={values.phone}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={errors.phone}
+                            error={error.phone}
                             required
                         />
                     </div>
 
-                    <TextField
-                        id="date"
-                        name="date"
-                        label="Select the date for your reservation:"
-                        type="date"
-                        value={values.date}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.date}
-                        required
-                    />
+                    <div className="min-w-0 md:col-span-1">
+                        <TextField
+                            id="date"
+                            name="date"
+                            label="Select the date for your reservation:"
+                            type="date"
+                            value={values.date}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={error.date}
+                            required
+                        />
+                    </div>
 
-                    <SelectField
-                        id="time"
-                        name="time"
-                        label="Choose the time for your reservation:"
-                        value={values.time}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.time}
-                        options={timeOptions}
-                        placeholder="Choose time..."
-                        required
-                    />
+                    <div className="min-w-0 md:col-span-1">
+                        <SelectField
+                            id="time"
+                            name="time"
+                            label="Choose the time for your reservation:"
+                            value={values.time}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={error.time}
+                            options={timeOptions}
+                            placeholder="Choose time..."
+                            required
+                        />
+                    </div>
 
-                    <SelectField
-                        id="guests"
-                        name="guests"
-                        label="Specify the number of guests joining for the reservation:"
-                        value={values.guests}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.guests}
-                        options={guestOptions}
-                        placeholder="Select guests..."
-                        required
-                    />
+                    <div className="min-w-0 md:col-span-1">
+                        <SelectField
+                            id="guests"
+                            name="guests"
+                            label="Specify the number of guests joining for the reservation:"
+                            value={values.guests}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={error.guests}
+                            options={guestOptions}
+                            placeholder="Select guests..."
+                            required
+                        />
+                    </div>
 
-                    <SelectField
-                        id="occasion"
-                        name="occasion"
-                        label="Let us know if you're celebrating any special occasion:"
-                        value={values.occasion}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={errors.occasion}
-                        options={occasionOptions}
-                        placeholder="Choose occasion..."
-                        required
-                    />
+                    <div className="min-w-0 md:col-span-1">
+                        <SelectField
+                            id="occasion"
+                            name="occasion"
+                            label="Let us know if you're celebrating any special occasion:"
+                            value={values.occasion}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={error.occasion}
+                            options={occasionOptions}
+                            placeholder="Choose occasion..."
+                            required
+                        />
+                    </div>
 
                     <div className="md:col-span-2">
                         <TextAreaField
@@ -136,7 +144,7 @@ export function ReservationForm() {
                             value={values.message}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={errors.message}
+                            error={error.message}
                         />
                     </div>
 

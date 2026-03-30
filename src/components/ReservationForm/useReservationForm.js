@@ -136,7 +136,7 @@ export async function submitReservation(values) {
 
 export function useReservationForm() {
     const [values, setValues] = useState(initialValues);
-    const [errors, setErrors] = useState({});
+    const [error, setError] = useState({});
     const [isSuccess, setIsSuccess] = useState(false);
 
     const handleChange = (event) => {
@@ -147,9 +147,9 @@ export function useReservationForm() {
             [name]: value,
         }));
 
-        if (errors[name]) {
-            setErrors((previousErrors) => ({
-                ...previousErrors,
+        if (error[name]) {
+            setError((previousError) => ({
+                ...previousError,
                 [name]: validateField(name, value),
             }));
         }
@@ -158,8 +158,8 @@ export function useReservationForm() {
     const handleBlur = (event) => {
         const { name, value } = event.target;
 
-        setErrors((previousErrors) => ({
-            ...previousErrors,
+        setError((previousError) => ({
+            ...previousError,
             [name]: validateField(name, value),
         }));
     };
@@ -168,7 +168,7 @@ export function useReservationForm() {
         event.preventDefault();
 
         const formErrors = validateForm(values);
-        setErrors(formErrors);
+        setError(formErrors);
 
         if (Object.keys(formErrors).length > 0) {
             setIsSuccess(false);
@@ -184,12 +184,12 @@ export function useReservationForm() {
 
         setIsSuccess(true);
         setValues(initialValues);
-        setErrors({});
+        setError({});
     };
 
     return {
         values,
-        errors,
+        error,
         isSuccess,
         handleChange,
         handleBlur,
