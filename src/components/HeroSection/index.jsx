@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import heroImg from "assets/hero-img.jpg";
 
 export function HeroSection() {
@@ -23,12 +24,12 @@ export function HeroSection() {
                         on traditional recipes served with a modern twist.
                     </p>
 
-                    <a
-                        href="/reservations"
+                    <Link
+                        to="/reservation"
                         className="mt-10 inline-flex items-center justify-center rounded-full bg-[#F4CE14] px-7 py-3 font-medium text-gray-900 shadow-sm transition-colors hover:bg-[#e3b913]"
                     >
                         Reserve a Table
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="relative z-10 md:w-[420px] md:translate-y-10 md:-mb-16 lg:w-[480px]">
