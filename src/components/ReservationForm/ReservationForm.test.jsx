@@ -1,5 +1,7 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
+import * as capstoneApi from "api/capstoneApi";
 import { ReservationForm } from "./index";
 
 // Helper: `<input type="date">` value for a date one week ahead (local calendar)
@@ -20,6 +22,14 @@ async function fillFormValid() {
     await userEvent.type(screen.getByLabelText(/email/i), "john@example.com");
     await userEvent.type(screen.getByLabelText(/phone/i), "1234567890");
     await userEvent.type(screen.getByLabelText(/select the date/i), futureDate);
+    await waitFor(() => {
+        expect(
+            within(screen.getByLabelText(/choose the time/i)).getByRole(
+                "option",
+                { name: /5:00 PM/i },
+            ),
+        ).toBeInTheDocument();
+    });
     await userEvent.selectOptions(
         screen.getByLabelText(/choose the time/i),
         "17:00",
@@ -35,6 +45,19 @@ async function fillFormValid() {
 }
 
 describe("ReservationForm", () => {
+    beforeEach(() => {
+        jest.spyOn(capstoneApi, "fetchAPI").mockImplementation(() => [
+            "17:00",
+            "18:00",
+            "21:00",
+        ]);
+        jest.spyOn(capstoneApi, "submitAPI").mockImplementation(() => true);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     // ─── Rendering ───────────────────────────────────────────
     test("renders all form fields and submit button", () => {
         render(<ReservationForm />);
@@ -220,15 +243,31 @@ describe("ReservationForm", () => {
     });
 
     // ─── Select field options ───────────────────────────────
-    test("renders correct time options", () => {
+    test("time select only has placeholder until a date is chosen", () => {
         render(<ReservationForm />);
 
         const timeSelect = screen.getByLabelText(/choose the time/i);
         const options = within(timeSelect).getAllByRole("option");
 
-        // placeholder + 5 time slots
-        expect(options).toHaveLength(6);
+        expect(options).toHaveLength(1);
+    });
+
+    test("loads time options from fetchAPI after a date is selected", async () => {
+        render(<ReservationForm />);
+
+        const timeSelect = screen.getByLabelText(/choose the time/i);
+        await userEvent.type(
+            screen.getByLabelText(/select the date/i),
+            getFutureDate(),
+        );
+
+        await waitFor(() => {
+            const options = within(timeSelect).getAllByRole("option");
+            expect(options).toHaveLength(4);
+        });
+
         expect(within(timeSelect).getByText("5:00 PM")).toBeInTheDocument();
+        expect(within(timeSelect).getByText("6:00 PM")).toBeInTheDocument();
         expect(within(timeSelect).getByText("9:00 PM")).toBeInTheDocument();
     });
 
