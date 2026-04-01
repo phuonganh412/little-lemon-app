@@ -1,13 +1,10 @@
-import { Header } from "components/Header";
 import { Main } from "components/Main";
-import { Footer } from "components/Footer";
+import { PageLayout } from "components/PageLayout";
 
 export function HomePage() {
     return (
-        <div className="App">
-            <Header />
+        <PageLayout>
             <Main />
-            <Footer />
-        </div>
+        </PageLayout>
     );
 }

@@ -1,14 +1,15 @@
 import { HeroSection } from "components/HeroSection";
 import { HighLightSection } from "components/HighLightSection";
+import { TestimonialsSection } from "components/TestimonialsSection";
+import { AboutSection } from "components/AboutSection";
 
 export function Main() {
     return (
         <main className="w-full">
             <HeroSection />
             <HighLightSection />
-            <section className="bg-white" aria-hidden="true">
-                <div className="mx-auto max-w-6xl px-6 py-20" />
-            </section>
+            <TestimonialsSection />
+            <AboutSection />
         </main>
     );
 }
