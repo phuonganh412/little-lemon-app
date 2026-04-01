@@ -1,5 +1,4 @@
 import { FormIntroCard } from "./FormComponents/FormIntroCard";
-import { ReservationSuccessBanner } from "./FormComponents/ReservationSuccessBanner";
 import { SelectField } from "../SelectField";
 import { TextAreaField } from "../TextAreaField";
 import { TextField } from "../TextField";
@@ -12,8 +11,7 @@ import {
 export function ReservationForm() {
     const {
         values,
-        error,
-        isSuccess,
+        errors,
         availableTimeOptions,
         handleChange,
         handleBlur,
@@ -24,8 +22,6 @@ export function ReservationForm() {
         <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border-4 border-[#9ec0b8] bg-[#f3f3f3]/85 shadow-xl backdrop-blur-[1px]">
             <FormIntroCard />
             <div className="px-8 py-12 md:px-12">
-                {isSuccess ? <ReservationSuccessBanner /> : null}
-
                 <form
                     className="grid grid-cols-1 gap-8 md:grid-cols-2"
                     onSubmit={handleSubmit}
@@ -41,7 +37,7 @@ export function ReservationForm() {
                             value={values.fullName}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.fullName}
+                            error={errors.fullName}
                             required
                         />
                     </div>
@@ -56,7 +52,7 @@ export function ReservationForm() {
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.email}
+                            error={errors.email}
                             required
                         />
                     </div>
@@ -71,7 +67,7 @@ export function ReservationForm() {
                             value={values.phone}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.phone}
+                            error={errors.phone}
                             required
                         />
                     </div>
@@ -85,7 +81,7 @@ export function ReservationForm() {
                             value={values.date}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.date}
+                            error={errors.date}
                             required
                         />
                     </div>
@@ -98,7 +94,7 @@ export function ReservationForm() {
                             value={values.time}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.time}
+                            error={errors.time}
                             options={availableTimeOptions}
                             placeholder="Choose time..."
                             required
@@ -113,7 +109,7 @@ export function ReservationForm() {
                             value={values.guests}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.guests}
+                            error={errors.guests}
                             options={guestOptions}
                             placeholder="Select guests..."
                             required
@@ -128,7 +124,7 @@ export function ReservationForm() {
                             value={values.occasion}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.occasion}
+                            error={errors.occasion}
                             options={occasionOptions}
                             placeholder="Choose occasion..."
                             required
@@ -144,7 +140,7 @@ export function ReservationForm() {
                             value={values.message}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={error.message}
+                            error={errors.message}
                         />
                     </div>
 

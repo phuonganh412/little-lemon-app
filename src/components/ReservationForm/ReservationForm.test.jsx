@@ -4,6 +4,13 @@ import userEvent from "@testing-library/user-event";
 import * as capstoneApi from "api/capstoneApi";
 import { ReservationForm } from "./index";
 
+const mockNavigate = jest.fn();
+
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"),
+    useNavigate: () => mockNavigate,
+}));
+
 // Helper: `<input type="date">` value for a date one week ahead (local calendar)
 function getFutureDate() {
     const date = new Date();
@@ -46,6 +53,7 @@ async function fillFormValid() {
 
 describe("ReservationForm", () => {
     beforeEach(() => {
+        mockNavigate.mockClear();
         jest.spyOn(capstoneApi, "fetchAPI").mockImplementation(() => [
             "17:00",
             "18:00",
@@ -86,10 +94,10 @@ describe("ReservationForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("does not show success banner initially", () => {
+    test("does not call navigate on initial render", () => {
         render(<ReservationForm />);
 
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     // ─── Validation (empty submit) ──────────────────────────
@@ -122,14 +130,14 @@ describe("ReservationForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("does not show success banner on failed submission", async () => {
+    test("does not call navigate when validation fails", async () => {
         render(<ReservationForm />);
 
         await userEvent.click(
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     // ─── Field-level validation ─────────────────────────────
@@ -190,7 +198,7 @@ describe("ReservationForm", () => {
     });
 
     // ─── Successful submission ──────────────────────────────
-    test("shows success banner after valid submission", async () => {
+    test("navigates once after valid submission", async () => {
         render(<ReservationForm />);
 
         await fillFormValid();
@@ -198,10 +206,14 @@ describe("ReservationForm", () => {
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(await screen.findByRole("status")).toBeInTheDocument();
-        expect(
-            screen.getByText(/reservation submitted successfully/i),
-        ).toBeInTheDocument();
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
+            expect(mockNavigate).toHaveBeenCalledWith(
+                "/reservation/confirmed",
+                { replace: true },
+            );
+            expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+        });
     });
 
     test("resets form fields after successful submission", async () => {
@@ -212,8 +224,10 @@ describe("ReservationForm", () => {
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(await screen.findByRole("status")).toBeInTheDocument();
-        expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
+            expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+        });
         expect(screen.getByLabelText(/email/i)).toHaveValue("");
         expect(screen.getByLabelText(/phone/i)).toHaveValue("");
         expect(screen.getByLabelText(/choose the time/i)).toHaveValue("");
@@ -238,8 +252,10 @@ describe("ReservationForm", () => {
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(await screen.findByRole("status")).toBeInTheDocument();
-        expect(screen.queryAllByRole("alert")).toHaveLength(0);
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
+            expect(screen.queryAllByRole("alert")).toHaveLength(0);
+        });
     });
 
     // ─── Select field options ───────────────────────────────
