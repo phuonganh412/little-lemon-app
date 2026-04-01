@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-
-import { fetchAPI, submitAPI } from "api/capstoneApi";
+import { useState } from "react";
 
 const initialValues = {
     fullName: "",
@@ -13,22 +11,13 @@ const initialValues = {
     message: "",
 };
 
-/** Maps API time strings like `"17:00"` to labels like `"5:00 PM"`. */
-function formatApiTimeToLabel(apiTime) {
-    const parts = String(apiTime).split(":");
-    const hour = Number(parts[0]);
-    const minute = Number(parts[1] ?? "0");
-
-    if (!Number.isFinite(hour) || !Number.isFinite(minute)) {
-        return apiTime;
-    }
-
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const h12 = hour % 12 === 0 ? 12 : hour % 12;
-    const minStr = String(minute).padStart(2, "0");
-
-    return `${h12}:${minStr} ${ampm}`;
-}
+export const timeOptions = [
+    { value: "17:00", label: "5:00 PM" },
+    { value: "18:00", label: "6:00 PM" },
+    { value: "19:00", label: "7:00 PM" },
+    { value: "20:00", label: "8:00 PM" },
+    { value: "21:00", label: "9:00 PM" },
+];
 
 export const guestOptions = Array.from({ length: 10 }, (_, index) => ({
     value: String(index + 1),
@@ -131,56 +120,24 @@ function validateForm(values) {
 }
 
 /**
- * Send reservation via capstone `submitAPI`. On failure, reject so the
+ * Send reservation to your backend. On network or HTTP errors, reject so the
  * form stays filled and the user can retry without retyping.
  */
 export async function submitReservation(values) {
-    const ok = submitAPI(values);
-
-    if (ok === false) {
-        throw new Error("Reservation failed");
-    }
+    // Example:
+    // const response = await fetch("/api/reservations", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(values),
+    // });
+    // if (!response.ok) throw new Error("Reservation failed");
+    await Promise.resolve();
 }
 
 export function useReservationForm() {
     const [values, setValues] = useState(initialValues);
     const [error, setError] = useState({});
     const [isSuccess, setIsSuccess] = useState(false);
-    const [availableTimeOptions, setAvailableTimeOptions] = useState([]);
-
-    useEffect(() => {
-        const trimmedDate =
-            typeof values.date === "string" ? values.date.trim() : "";
-
-        if (trimmedDate === "") {
-            setAvailableTimeOptions([]);
-            setValues((previous) =>
-                previous.time ? { ...previous, time: "" } : previous,
-            );
-            return;
-        }
-
-        const parsedDate = parseLocalDateFromDateInput(trimmedDate);
-
-        if (!parsedDate) {
-            setAvailableTimeOptions([]);
-            setValues((previous) =>
-                previous.time ? { ...previous, time: "" } : previous,
-            );
-            return;
-        }
-
-        const slots = fetchAPI(parsedDate);
-        const list = Array.isArray(slots) ? slots : [];
-
-        const nextOptions = list.map((slot) => ({
-            value: String(slot),
-            label: formatApiTimeToLabel(slot),
-        }));
-
-        setAvailableTimeOptions(nextOptions);
-        setValues((previous) => ({ ...previous, time: "" }));
-    }, [values.date]);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -234,7 +191,6 @@ export function useReservationForm() {
         values,
         error,
         isSuccess,
-        availableTimeOptions,
         handleChange,
         handleBlur,
         handleSubmit,
