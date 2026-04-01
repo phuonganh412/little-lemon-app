@@ -4,6 +4,13 @@ import userEvent from "@testing-library/user-event";
 import * as capstoneApi from "api/capstoneApi";
 import { ReservationForm } from "./index";
 
+const mockNavigate = jest.fn();
+
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"),
+    useNavigate: () => mockNavigate,
+}));
+
 // Helper: `<input type="date">` value for a date one week ahead (local calendar)
 function getFutureDate() {
     const date = new Date();
@@ -46,6 +53,7 @@ async function fillFormValid() {
 
 describe("ReservationForm", () => {
     beforeEach(() => {
+        mockNavigate.mockClear();
         jest.spyOn(capstoneApi, "fetchAPI").mockImplementation(() => [
             "17:00",
             "18:00",
@@ -86,11 +94,10 @@ describe("ReservationForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("does not call onSuccess on initial render", () => {
-        const onSuccess = jest.fn();
-        render(<ReservationForm onSuccess={onSuccess} />);
+    test("does not call navigate on initial render", () => {
+        render(<ReservationForm />);
 
-        expect(onSuccess).not.toHaveBeenCalled();
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     // ─── Validation (empty submit) ──────────────────────────
@@ -123,15 +130,14 @@ describe("ReservationForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("does not call onSuccess when validation fails", async () => {
-        const onSuccess = jest.fn();
-        render(<ReservationForm onSuccess={onSuccess} />);
+    test("does not call navigate when validation fails", async () => {
+        render(<ReservationForm />);
 
         await userEvent.click(
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(onSuccess).not.toHaveBeenCalled();
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     // ─── Field-level validation ─────────────────────────────
@@ -192,9 +198,8 @@ describe("ReservationForm", () => {
     });
 
     // ─── Successful submission ──────────────────────────────
-    test("calls onSuccess once after valid submission", async () => {
-        const onSuccess = jest.fn();
-        render(<ReservationForm onSuccess={onSuccess} />);
+    test("navigates once after valid submission", async () => {
+        render(<ReservationForm />);
 
         await fillFormValid();
         await userEvent.click(
@@ -202,14 +207,17 @@ describe("ReservationForm", () => {
         );
 
         await waitFor(() => {
-            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
+            expect(mockNavigate).toHaveBeenCalledWith(
+                "/reservation/confirmed",
+                { replace: true },
+            );
             expect(screen.getByLabelText(/full name/i)).toHaveValue("");
         });
     });
 
     test("resets form fields after successful submission", async () => {
-        const onSuccess = jest.fn();
-        render(<ReservationForm onSuccess={onSuccess} />);
+        render(<ReservationForm />);
 
         await fillFormValid();
         await userEvent.click(
@@ -217,7 +225,7 @@ describe("ReservationForm", () => {
         );
 
         await waitFor(() => {
-            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
             expect(screen.getByLabelText(/full name/i)).toHaveValue("");
         });
         expect(screen.getByLabelText(/email/i)).toHaveValue("");
@@ -230,8 +238,7 @@ describe("ReservationForm", () => {
     });
 
     test("clears all error messages after successful submission", async () => {
-        const onSuccess = jest.fn();
-        render(<ReservationForm onSuccess={onSuccess} />);
+        render(<ReservationForm />);
 
         // First, submit empty to trigger errors
         await userEvent.click(
@@ -246,7 +253,7 @@ describe("ReservationForm", () => {
         );
 
         await waitFor(() => {
-            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(mockNavigate).toHaveBeenCalledTimes(1);
             expect(screen.queryAllByRole("alert")).toHaveLength(0);
         });
     });

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { fetchAPI, submitAPI } from "api/capstoneApi";
 
@@ -142,8 +143,8 @@ export async function submitReservation(values) {
     }
 }
 
-export function useReservationForm(options = {}) {
-    const { onSuccess } = options;
+export function useReservationForm() {
+    const navigate = useNavigate();
     const [values, setValues] = useState(initialValues);
     const [errors, setErrors] = useState({});
     const [availableTimeOptions, setAvailableTimeOptions] = useState([]);
@@ -223,9 +224,7 @@ export function useReservationForm(options = {}) {
             return;
         }
 
-        if (typeof onSuccess === "function") {
-            onSuccess();
-        }
+        navigate("/reservation/confirmed", { replace: true });
 
         queueMicrotask(() => {
             setValues(initialValues);

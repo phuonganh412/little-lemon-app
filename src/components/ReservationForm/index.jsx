@@ -8,7 +8,7 @@ import {
     occasionOptions,
 } from "./useReservationForm";
 
-export function ReservationForm({ onSuccess }) {
+export function ReservationForm() {
     const {
         values,
         errors,
@@ -16,7 +16,7 @@ export function ReservationForm({ onSuccess }) {
         handleChange,
         handleBlur,
         handleSubmit,
-    } = useReservationForm({ onSuccess });
+    } = useReservationForm();
 
     return (
         <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border-4 border-[#9ec0b8] bg-[#f3f3f3]/85 shadow-xl backdrop-blur-[1px]">
