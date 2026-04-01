@@ -1,7 +1,10 @@
 import reservationBgImg from "assets/reservation-bg.png";
+import { useNavigate } from "react-router-dom";
 import { ReservationForm } from "../ReservationForm";
 
-export function ReservationBody() {
+export function ReservationBody({ children }) {
+    const navigate = useNavigate();
+
     return (
         <section
             aria-label="Reservation body section"
@@ -12,7 +15,13 @@ export function ReservationBody() {
             }}
         >
             <div className="mx-auto w-full max-w-6xl px-6">
-                <ReservationForm />
+                {children ?? (
+                    <ReservationForm
+                        onSuccess={() =>
+                            navigate("/reservation/confirmed", { replace: true })
+                        }
+                    />
+                )}
             </div>
         </section>
     );

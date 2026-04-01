@@ -142,10 +142,10 @@ export async function submitReservation(values) {
     }
 }
 
-export function useReservationForm() {
+export function useReservationForm(options = {}) {
+    const { onSuccess } = options;
     const [values, setValues] = useState(initialValues);
-    const [error, setError] = useState({});
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [errors, setErrors] = useState({});
     const [availableTimeOptions, setAvailableTimeOptions] = useState([]);
 
     useEffect(() => {
@@ -190,9 +190,9 @@ export function useReservationForm() {
             [name]: value,
         }));
 
-        if (error[name]) {
-            setError((previousError) => ({
-                ...previousError,
+        if (errors[name]) {
+            setErrors((previousErrors) => ({
+                ...previousErrors,
                 [name]: validateField(name, value),
             }));
         }
@@ -201,8 +201,8 @@ export function useReservationForm() {
     const handleBlur = (event) => {
         const { name, value } = event.target;
 
-        setError((previousError) => ({
-            ...previousError,
+        setErrors((previousErrors) => ({
+            ...previousErrors,
             [name]: validateField(name, value),
         }));
     };
@@ -211,29 +211,31 @@ export function useReservationForm() {
         event.preventDefault();
 
         const formErrors = validateForm(values);
-        setError(formErrors);
+        setErrors(formErrors);
 
         if (Object.keys(formErrors).length > 0) {
-            setIsSuccess(false);
             return;
         }
 
         try {
             await submitReservation(values);
         } catch {
-            setIsSuccess(false);
             return;
         }
 
-        setIsSuccess(true);
-        setValues(initialValues);
-        setError({});
+        if (typeof onSuccess === "function") {
+            onSuccess();
+        }
+
+        queueMicrotask(() => {
+            setValues(initialValues);
+            setErrors({});
+        });
     };
 
     return {
         values,
-        error,
-        isSuccess,
+        errors,
         availableTimeOptions,
         handleChange,
         handleBlur,

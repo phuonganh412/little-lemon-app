@@ -86,10 +86,11 @@ describe("ReservationForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("does not show success banner initially", () => {
-        render(<ReservationForm />);
+    test("does not call onSuccess on initial render", () => {
+        const onSuccess = jest.fn();
+        render(<ReservationForm onSuccess={onSuccess} />);
 
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+        expect(onSuccess).not.toHaveBeenCalled();
     });
 
     // ─── Validation (empty submit) ──────────────────────────
@@ -122,14 +123,15 @@ describe("ReservationForm", () => {
         ).toBeInTheDocument();
     });
 
-    test("does not show success banner on failed submission", async () => {
-        render(<ReservationForm />);
+    test("does not call onSuccess when validation fails", async () => {
+        const onSuccess = jest.fn();
+        render(<ReservationForm onSuccess={onSuccess} />);
 
         await userEvent.click(
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+        expect(onSuccess).not.toHaveBeenCalled();
     });
 
     // ─── Field-level validation ─────────────────────────────
@@ -190,30 +192,34 @@ describe("ReservationForm", () => {
     });
 
     // ─── Successful submission ──────────────────────────────
-    test("shows success banner after valid submission", async () => {
-        render(<ReservationForm />);
+    test("calls onSuccess once after valid submission", async () => {
+        const onSuccess = jest.fn();
+        render(<ReservationForm onSuccess={onSuccess} />);
 
         await fillFormValid();
         await userEvent.click(
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(await screen.findByRole("status")).toBeInTheDocument();
-        expect(
-            screen.getByText(/reservation submitted successfully/i),
-        ).toBeInTheDocument();
+        await waitFor(() => {
+            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+        });
     });
 
     test("resets form fields after successful submission", async () => {
-        render(<ReservationForm />);
+        const onSuccess = jest.fn();
+        render(<ReservationForm onSuccess={onSuccess} />);
 
         await fillFormValid();
         await userEvent.click(
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(await screen.findByRole("status")).toBeInTheDocument();
-        expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+        await waitFor(() => {
+            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+        });
         expect(screen.getByLabelText(/email/i)).toHaveValue("");
         expect(screen.getByLabelText(/phone/i)).toHaveValue("");
         expect(screen.getByLabelText(/choose the time/i)).toHaveValue("");
@@ -224,7 +230,8 @@ describe("ReservationForm", () => {
     });
 
     test("clears all error messages after successful submission", async () => {
-        render(<ReservationForm />);
+        const onSuccess = jest.fn();
+        render(<ReservationForm onSuccess={onSuccess} />);
 
         // First, submit empty to trigger errors
         await userEvent.click(
@@ -238,8 +245,10 @@ describe("ReservationForm", () => {
             screen.getByRole("button", { name: /book now/i }),
         );
 
-        expect(await screen.findByRole("status")).toBeInTheDocument();
-        expect(screen.queryAllByRole("alert")).toHaveLength(0);
+        await waitFor(() => {
+            expect(onSuccess).toHaveBeenCalledTimes(1);
+            expect(screen.queryAllByRole("alert")).toHaveLength(0);
+        });
     });
 
     // ─── Select field options ───────────────────────────────
